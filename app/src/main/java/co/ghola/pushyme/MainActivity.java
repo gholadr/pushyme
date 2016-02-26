@@ -20,12 +20,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
         Pushy.listen(this);
         new registerForPushNotificationsAsync().execute();
-        SharedPreferences prefA = PreferenceManager.getDefaultSharedPreferences(this);
-        Log.d(TAG, prefA.getString("pushyToken", null));
 
     }
     private class registerForPushNotificationsAsync extends AsyncTask<Void, Void, String>
