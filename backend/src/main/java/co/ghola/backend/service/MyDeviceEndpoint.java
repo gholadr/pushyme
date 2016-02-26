@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import javax.inject.Named;
@@ -51,12 +53,13 @@ public class MyDeviceEndpoint {
 
         // get the time
         Date curdate = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("dd MMM hh:mm a");
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM hh:mm:ss a");
+        format.setTimeZone(TimeZone.getTimeZone("GMT+07"));
         String timetostr = format.format(curdate);
 
 
         // Add test message
-        payload.put("message", String.format("ola, it is now %s", timetostr));
+        payload.put("message", String.format("ola, it is now %s (ICT)", timetostr));
 
         // Prepare the push request
         PushyPushRequest push = new PushyPushRequest(payload, registrationIDs.toArray( new String[registrationIDs.size()] ));
@@ -76,7 +79,7 @@ public class MyDeviceEndpoint {
         PushyPushResponse response = new PushyPushResponse();
 
 
-        response.setResponse(String.format("[%s] Your push has been sent to device id %s", timetostr, id));
+        response.setResponse(String.format("[%s ICT ] Your push has been sent to device id %s", timetostr, id));
 
         return response;
     }
