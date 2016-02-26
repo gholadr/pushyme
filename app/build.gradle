@@ -12,6 +12,15 @@ android {
         versionName "1.0"
         multiDexEnabled true
     }
+    productFlavors {
+        develop {
+            applicationId + ".develop"
+        }
+        production {
+            applicationId
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
