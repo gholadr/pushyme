@@ -3,10 +3,15 @@ package co.ghola.backend.service;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
+import com.google.api.server.spi.response.ServiceUnavailableException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -30,14 +35,8 @@ public class MyDeviceEndpoint {
 
     private static final Logger logger = Logger.getLogger(MyDeviceEndpoint.class.getName());
 
-    /**
-     * This method gets the <code>MyDevice</code> object associated with the specified <code>id</code>.
-     *
-     * @param id The id of the object to be returned.
-     * @return The <code>MyDevice</code> associated with <code>id</code>.
-     */
     @ApiMethod(name = "sendPush")
-    public MyDevice sendPush(@Named("id") String id) {
+    public PushyPushResponse sendPush(@Named("id") String id) throws Exception{
         // TODO: Implement this function
         logger.info("Calling sendPush method");
 
@@ -50,8 +49,14 @@ public class MyDeviceEndpoint {
         // Set payload (any object, it will be serialized to JSON)
         Map<String, String> payload = new HashMap<String, String>();
 
+        // get the time
+        Date curdate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("dd MMM hh:mm a");
+        String timetostr = format.format(curdate);
+
+
         // Add test message
-        payload.put("message", "bitches!!!!!");
+        payload.put("message", String.format("ola, it is now %s", timetostr));
 
         // Prepare the push request
         PushyPushRequest push = new PushyPushRequest(payload, registrationIDs.toArray( new String[registrationIDs.size()] ));
@@ -63,27 +68,16 @@ public class MyDeviceEndpoint {
         }
         catch( Exception exc )
         {
-            // Error, print to output
-            System.out.println(exc.toString());
+            // Error, output log
+            logger.info(exc.toString());
+            throw new ServiceUnavailableException("Something bad happened. Check the logs.");
         }
 
+        PushyPushResponse response = new PushyPushResponse();
 
-        MyDevice response = new MyDevice();
-        response.setId("Your push has been sent to device id: " + id
-        );
+
+        response.setResponse(String.format("[%s] Your push has been sent to device id %s", timetostr, id));
+
         return response;
-    }
-
-    /**
-     * This inserts a new <code>MyDevice</code> object.
-     *
-     * @param myDevice The object to be added.
-     * @return The object to be added.
-     */
-    @ApiMethod(name = "insertMyDevice")
-    public MyDevice insertMyDevice(MyDevice myDevice) {
-        // TODO: Implement this function
-        logger.info("Calling insertMyDevice method");
-        return myDevice;
     }
 }
