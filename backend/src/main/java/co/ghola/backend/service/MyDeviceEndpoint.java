@@ -3,7 +3,6 @@ package co.ghola.backend.service;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
-import com.google.api.server.spi.response.ServiceUnavailableException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,13 +65,11 @@ public class MyDeviceEndpoint {
         catch( Exception exc )
         {
             // Error, output log
-            logger.info(exc.toString());
-            throw new ServiceUnavailableException("Something bad happened. Check the logs.");
+            System.err.println(exc.getMessage());
+            throw new Exception(exc);
         }
 
         PushyPushResponse response = new PushyPushResponse();
-
-
         response.setResponse(String.format("[%s ICT ] Your push has been sent to device id %s", timetostr, id));
 
         return response;
